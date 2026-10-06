@@ -1,0 +1,16 @@
+{
+  "contents": [
+    {
+      "parts": [
+        {
+          "text": "Hello"
+        }
+      ]
+    }
+  ],
+  "toolConfig": {
+    "function_calling_config": {
+      "mode": "AUTO"
+    }
+  }
+}

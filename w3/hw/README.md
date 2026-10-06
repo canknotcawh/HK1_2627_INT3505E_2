@@ -20,39 +20,25 @@ Checklist: lowercase, kebab-case cho path, snake_case cho query, số nhiều ch
 
 **Không đạt**
 
-1. **Động từ camelCase nằm trong path** (vi phạm "không động từ trong path" và "lowercase")
+1. **Động từ camelCase nằm trong path** 
 ```
 POST https://generativelanguage.googleapis.com/v1beta/{model=models/*}:generateContent
-POST https://generativelanguage.googleapis.com/v1beta/{model=models/*}:streamGenerateContent
 ```
+![generateContent](images/generateContent.png)
 
-2. **Tên collection camelCase:** `cachedContents/{cachedContent}`, đáng lẽ là kebab-case (`cached-contents`)
+2. **Tên collection camelCase:**
+`cachedContents/{cachedContent}`, phải là kebab-case (`cached-contents`)
+
+![cachedContents](images/cachedContents.png)
 
 3. **Field JSON trộn camelCase và snake_case.** Phần reference dùng camelCase, ví dụ curl của cùng trang dùng snake_case:
 
-| Reference | Ví dụ curl |
+| Reference | Curl |
 |-----------|------------|
 | `systemInstruction` | `system_instruction` |
 | `toolConfig` | `tool_config` |
-| `generationConfig` | `generationConfig` chứa `response_mime_type`, `response_schema` (trộn trong cùng một request) |
 
-Giá trị enum cũng không thống nhất: `"type": "ARRAY"` ở ví dụ JSON Mode, `"type": "object"` ở ví dụ function calling. Proto JSON chấp nhận cả hai kiểu, nhưng tài liệu không chốt một dạng chuẩn.
-
-4. **Model ID không đồng nhất**
-
-| Vấn đề | Ví dụ |
-|--------|-------|
-| Vị trí `preview` khác nhau | `gemini-2.5-flash-preview-tts` và `gemini-3.1-flash-tts-preview` |
-| Hậu tố ngày lúc có lúc không | `gemini-2.5-flash-native-audio-preview-12-2025` và `gemini-3.1-pro-preview` |
-| Xếp loại không khớp với ID | "Gemini Omni Flash" nằm ở mục **Preview** nhưng ID `gemini-omni-1.1-flash` không có `-preview` |
-| Tên hiển thị khác ID | "Nano Banana 2" tương ứng `gemini-3.1-flash-image` |
-| Định dạng version khác nhau | `gemini-embedding-2-preview` và `gemini-embedding-001` |
-
-Chính trang models ghi rõ quy ước chỉ áp dụng từ 09/2025, model ra trước đó có thể khác.
-
-5. **Cột "Endpoint" chứa model ID**, trong khi endpoint thật là `.../models/{model}:generateContent`
-
-6. **Vị trí version không cố định:** upload dùng `/upload/v1beta/files`, các API khác dùng `/v1beta/...`
+![fieldTest](images/fieldTest.png)
 
 ## Tiêu chí 3: Status code đúng nghĩa
 ---
@@ -60,14 +46,20 @@ Checklist: mỗi response dùng code phù hợp, không trả 200 kèm lỗi tro
 
 **Đạt:** với request thường, API set đúng HTTP status và trả `{"error": {"code", "message"}}`
 
-| HTTP | Code | Nhận xét |
-|------|------|----------|
-| 401 | `authentication` | Thiếu hoặc sai API key |
-| 403 | `permission_denied` | Có xác thực nhưng không đủ quyền (tách đúng với 401) |
-| 404 | `not_found`, `model_not_found` | Đúng |
-| 409 | `already_exists`, `aborted` | Đúng |
-| 429 | `rate_limit_exceeded`, `quota_exceeded`, `too_many_requests` | Tách giới hạn theo phút và theo ngày |
-| 402 | `payment_required` | Hết credit, ghi rõ "đừng retry" |
-| 500, 501, 503, 504 | `api_error`, `unimplemented`, `service_unavailable`, `deadline_exceeded` | Đúng |
+| Trường hợp           | Test     | Kết quả                                |
+| -------------------- | -------: | -------------------------------------- |
+| Không có API key     |      403 | `PERMISSION_DENIED`                    |
+| API key không hợp lệ |      400 | `INVALID_ARGUMENT` + `API_KEY_INVALID` |
+| Vượt quota           |      429 | `RESOURCE_EXHAUSTED`                   |
+| Model không tồn tại  |      404 | `NOT_FOUND`                            |
+| Service đang quá tải |      503 | `UNAVAILABLE`                          |
 
-Quy tắc retry khớp với slide: retry 429, 408, 5xx; không retry 400, 402, 403.
+![400](images/400.png)
+
+![403](images/403.png)
+
+![404](images/404.png)
+
+![429](images/429.png)
+
+![503](images/503.png)

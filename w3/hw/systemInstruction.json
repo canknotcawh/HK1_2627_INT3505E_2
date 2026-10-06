@@ -1,0 +1,18 @@
+{
+  "contents": [
+    {
+      "parts": [
+        {
+          "text": "Hello"
+        }
+      ]
+    }
+  ],
+  "systemInstruction": {
+    "parts": [
+      {
+        "text": "Answer briefly."
+      }
+    ]
+  }
+}
