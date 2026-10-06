@@ -1,7 +1,24 @@
 from flask import Flask, jsonify
 
 app = Flask(__name__)
-ORDERS = {}  # giả lập DB
+ORDERS = {
+    '1': {
+        'id': '1',
+        'status': 'pending'
+    },
+    '2': {
+        'id': '2',
+        'status': 'shipped'
+    },
+    '3': {
+        'id': '3',
+        'status': 'delivered'
+    },
+    '4': {
+        'id': '4',
+        'status': 'cancelled'
+    }
+}  # giả lập DB
 
 # DELETE /orders/<id>
 @app.route("/orders/<order_id>", methods=["DELETE"])

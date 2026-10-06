@@ -1,7 +1,23 @@
 from flask import Flask, jsonify, request
 from uuid import uuid4
 app = Flask(__name__)
-BOOKS = []
+BOOKS = [
+    {
+        'id': '1',
+        'title': 'API Design Patterns',
+        'author': 'JJ Geewax',
+    },
+    {
+        'id': '2',
+        'title': 'Building an API Product',
+        'author': 'Bruno Pedro',
+    },
+    {
+        'id': '3',
+        'title': 'Principles of Web API Design',
+        'author': 'James Higginbotham',
+    }
+]
 
 def find_by_id(book_id):
     for book in BOOKS:

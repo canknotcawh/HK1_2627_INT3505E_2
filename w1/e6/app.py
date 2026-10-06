@@ -3,8 +3,14 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 _next = 2
-BOOKS = [{"id": 1, "title": "Clean Code", "author": "R. Martin"}]
-
+BOOKS = [
+    {
+        'id': 1, 'title': 'Clean Code', 'author': 'R. Martin', 'year': 2008
+    },
+    {
+        'id': 2, 'title': 'The Pragmatic Programmer', 'author': 'A. Hunt', 'year': 1999
+    }
+]
 
 def find(bid):
     return next((b for b in BOOKS if b["id"] == bid), None)
