@@ -27,3 +27,6 @@ def create_book():
 	resp = make_response(jsonify(book), 201) #tạo response với dữ liệu book và status code 201
 	resp.headers["Location"] = f"/books/{book['id']}" #thêm header Location vào response, trỏ đến URL của book vừa tạo
 	return resp
+
+if __name__ == "__main__":
+	app.run(host="127.0.0.1", port=5000, debug=True)
