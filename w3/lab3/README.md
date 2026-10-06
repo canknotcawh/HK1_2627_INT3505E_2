@@ -1,3 +1,3 @@
-##Test Lab3
+# Test Lab 3
 
-![lab3](images/lab3.png)
+![lab3](lab3.png)
