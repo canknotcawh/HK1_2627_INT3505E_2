@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: Tasks API
+  version: 1.0.0
+  description: API quản lý task nội bộ.
+  contact:
+    name: Tasks API maintainers
+    email: api@example.com
+servers:
+  - url: http://localhost:5000/v1
+    description: Local development server
+tags:
+  - name: tasks
+    description: Tạo, xem, cập nhật và xóa task
+security:
+  - bearerAuth: []
+paths:
+  /tasks:
+    get:
+      tags: [tasks]
+      operationId: listTasks
+      summary: Liệt kê task
+      description: Trả về danh sách task có phân trang và lọc theo trạng thái.
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/StatusFilter'
+      responses:
+        '200':
+          description: Trang task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [tasks]
+      operationId: createTask
+      summary: Tạo task
+      description: Tạo task mới. Máy chủ sinh id và createdAt.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskInput'
+      responses:
+        '201':
+          description: Task đã được tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /tasks/{taskId}:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    get:
+      tags: [tasks]
+      operationId: getTaskById
+      summary: Lấy task theo ID
+      responses:
+        '200':
+          description: Task được yêu cầu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [tasks]
+      operationId: patchTask
+      summary: Cập nhật một phần task
+      description: Chỉ cập nhật các trường được gửi trong request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskInput'
+      responses:
+        '200':
+          description: Task sau khi cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [tasks]
+      operationId: deleteTask
+      summary: Xóa task
+      responses:
+        '204':
+          description: Đã xóa task; response không có body
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      description: UUID của task
+      schema:
+        type: string
+        format: uuid
+    Page:
+      name: page
+      in: query
+      description: Số trang bắt đầu từ 1
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      description: Số task mỗi trang
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    StatusFilter:
+      name: status
+      in: query
+      description: Lọc theo trạng thái
+      schema:
+        $ref: '#/components/schemas/TaskStatus'
+  schemas:
+    TaskStatus:
+      type: string
+      enum: [todo, in_progress, done]
+      example: in_progress
+    TaskPriority:
+      type: string
+      enum: [low, medium, high]
+      example: medium
+    Task:
+      type: object
+      required: [id, title, status, priority, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: Hoàn thành thiết kế API
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+          example: '2026-11-15'
+        assigneeId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+    CreateTaskInput:
+      type: object
+      required: [title]
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+        assigneeId:
+          type: string
+          format: uuid
+          nullable: true
+    UpdateTaskInput:
+      type: object
+      minProperties: 1
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+        assigneeId:
+          type: string
+          format: uuid
+          nullable: true
+    TaskPage:
+      type: object
+      required: [items, page, pageSize, totalItems]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalItems:
+          type: integer
+    ApiError:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: validation_error
+        message:
+          type: string
+          example: title must not be empty
+  responses:
+    BadRequest:
+      description: Request không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Unauthorized:
+      description: Thiếu hoặc token không hợp lệ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    NotFound:
+      description: Không tìm thấy task
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    ValidationError:
+      description: Dữ liệu không vượt qua kiểm tra nghiệp vụ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
