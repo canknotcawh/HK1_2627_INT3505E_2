@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.edu/bookstore/schemas/author.schema.json",
+  "title": "Author",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "bio"],
+  "properties": {
+    "id": {"type": "integer", "minimum": 1},
+    "name": {"type": "string", "minLength": 1, "maxLength": 160},
+    "bio": {"type": ["string", "null"]}
+  }
+}

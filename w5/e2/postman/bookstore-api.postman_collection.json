@@ -1,0 +1,13 @@
+{
+  "info": {"name": "Bookstore API v1", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json", "description": "Book CRUD, filtering, multi-key sorting, offset and cursor pagination."},
+  "variable": [{"key": "baseUrl", "value": "http://127.0.0.1:5000/api/v1"}, {"key": "bookId", "value": "1"}, {"key": "cursor", "value": ""}],
+  "item": [
+    {"name": "List books - offset + genre + multi-sort", "request": {"method": "GET", "url": "{{baseUrl}}/books?strategy=offset&page=1&per_page=2&genre=fiction&sort=price_vnd%3Adesc%2Ctitle%3Aasc"}},
+    {"name": "List books - cursor first page", "request": {"method": "GET", "url": "{{baseUrl}}/books?strategy=cursor&limit=2&sort=title%3Aasc%2Cid%3Aasc"}},
+    {"name": "List books - cursor next page", "request": {"method": "GET", "url": "{{baseUrl}}/books?strategy=cursor&limit=2&sort=title%3Aasc%2Cid%3Aasc&cursor={{cursor}}"}},
+    {"name": "Get book", "request": {"method": "GET", "url": "{{baseUrl}}/books/{{bookId}}"}},
+    {"name": "Create book", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"title\": \"New Book\",\n  \"isbn\": \"9780000000099\",\n  \"price_vnd\": 99000,\n  \"stock\": 12,\n  \"genre\": \"fiction\",\n  \"category_id\": 1\n}"}, "url": "{{baseUrl}}/books"}},
+    {"name": "Update book", "request": {"method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"stock\": 9}"}, "url": "{{baseUrl}}/books/{{bookId}}"}},
+    {"name": "Delete book", "request": {"method": "DELETE", "url": "{{baseUrl}}/books/{{bookId}}"}}
+  ]
+}
