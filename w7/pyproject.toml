@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "product-api-lab1"
+version = "1.0.0"
+requires-python = ">=3.11"
+dependencies = ["Flask>=3,<4", "Flask-SQLAlchemy>=3.1,<4", "Flask-Migrate>=4,<5", "SQLAlchemy>=2,<3", "marshmallow>=3.20,<5", "psycopg[binary]>=3.1,<4", "gunicorn>=21,<24"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

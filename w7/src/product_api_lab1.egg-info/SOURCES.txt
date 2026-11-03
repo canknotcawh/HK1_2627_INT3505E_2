@@ -1,0 +1,15 @@
+pyproject.toml
+src/product_api/__init__.py
+src/product_api/blueprints.py
+src/product_api/config.py
+src/product_api/errors.py
+src/product_api/extensions.py
+src/product_api/factory.py
+src/product_api/models.py
+src/product_api/schemas.py
+src/product_api_lab1.egg-info/PKG-INFO
+src/product_api_lab1.egg-info/SOURCES.txt
+src/product_api_lab1.egg-info/dependency_links.txt
+src/product_api_lab1.egg-info/requires.txt
+src/product_api_lab1.egg-info/top_level.txt
+tests/test_api.py

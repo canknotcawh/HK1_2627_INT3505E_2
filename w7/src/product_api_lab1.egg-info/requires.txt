@@ -1,0 +1,10 @@
+Flask<4,>=3
+Flask-SQLAlchemy<4,>=3.1
+Flask-Migrate<5,>=4
+SQLAlchemy<3,>=2
+marshmallow<5,>=3.20
+psycopg[binary]<4,>=3.1
+gunicorn<24,>=21
+
+[test]
+pytest<9,>=8
