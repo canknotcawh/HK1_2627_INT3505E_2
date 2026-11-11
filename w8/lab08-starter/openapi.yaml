@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Books API — Lab 08
   version: 1.0.0
@@ -22,7 +22,7 @@ paths:
                   status: {type: string}
   /books:
     get:
-      # LAB 2 intentional issue 1: operationId is missing.
+      operationId: listBooks
       parameters:
         - in: query
           name: author
@@ -91,10 +91,6 @@ paths:
       responses:
         '204':
           description: Deleted (response has no body)
-          # LAB 2 intentional issue 2: 204 incorrectly declares a body.
-          content:
-            application/json:
-              schema: {type: object}
         '404': {$ref: '#/components/responses/NotFound'}
 components:
   schemas:
@@ -107,11 +103,16 @@ components:
         title: {type: string, minLength: 1, maxLength: 200}
         author: {type: string, minLength: 1, maxLength: 200}
         year:
-          type: integer
+          type:
+            - integer
+            - 'null'
           minimum: 1450
           maximum: 2100
-          nullable: true
-        isbn: {type: string, pattern: '^\d{13}$', nullable: true}
+        isbn:
+          type:
+            - string
+            - 'null'
+          pattern: '^\d{13}$'
     BookInput:
       type: object
       additionalProperties: false

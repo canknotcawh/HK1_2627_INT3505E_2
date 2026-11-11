@@ -1,0 +1,52 @@
+
+extends:
+  - spectral:oas
+
+functionsDir: ./spectral-functions
+
+functions:
+  - has-response-fields
+
+rules:
+  get-books-operation-id:
+    description: GET /books must define an operationId
+    message: GET /books must have an operationId.
+    severity: error
+    given: $.paths['/books'].get
+    then:
+      field: operationId
+      function: truthy
+
+  delete-204-no-content:
+    description: DELETE 204 response must not define a response body
+    message: A 204 response must not contain content.
+    severity: error
+    given: $.paths['/books/{id}'].delete.responses['204']
+    then:
+      field: content
+      function: undefined
+
+  book-year-integer:
+    description: Book.year must be an integer or null
+    message: Book.year must allow integer and null values.
+    severity: error
+    given: $.components.schemas.Book.properties.year
+    then:
+      field: type
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          allOf:
+            - contains:
+                const: integer
+            - contains:
+                const: 'null'
+
+  response-200-has-fields:
+    description: Every 200 response schema must define at least one field
+    message: A 200 response schema must contain at least one field.
+    severity: error
+    given: $.paths[*][*].responses['200'].content[*].schema
+    then:
+      function: has-response-fields
