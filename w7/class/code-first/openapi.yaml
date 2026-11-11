@@ -1,0 +1,40 @@
+openapi: 3.0.3
+
+info:
+  title: Product API
+  version: 1.0.0
+
+paths:
+  /api/v1/products/:
+    get:
+      summary: Get all products
+      responses:
+        '200':
+          description: List of products
+
+    post:
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSchema'
+
+      responses:
+        '201':
+          description: Product created
+
+components:
+  schemas:
+    ProductSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        description:
+          type: string
