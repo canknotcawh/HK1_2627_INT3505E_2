@@ -2,15 +2,24 @@ openapi: 3.1.0
 info:
   title: Books API — Lab 08
   version: 1.0.0
+  contact:
+    name: INT3505E — Lab 08
+    email: lab08@example.edu
   description: |
-    Educational API. LAB 2: three *intentional* contract defects remain.
-    The application is the reference for intended behavior.
+    Educational API. The application is the reference for intended behavior.
 servers:
   - url: http://localhost:5000
+tags:
+  - name: health
+    description: Service liveness
+  - name: books
+    description: Book catalogue CRUD
 paths:
   /health:
     get:
       operationId: healthCheck
+      tags: [health]
+      description: Report whether the service is ready to accept requests.
       responses:
         '200':
           description: Service is ready
@@ -23,6 +32,8 @@ paths:
   /books:
     get:
       operationId: listBooks
+      tags: [books]
+      description: List books, optionally filtered by author or year and paginated (20 per page).
       parameters:
         - in: query
           name: author
@@ -41,8 +52,11 @@ paths:
               schema:
                 type: array
                 items: {$ref: '#/components/schemas/Book'}
+        '400': {$ref: '#/components/responses/BadRequest'}
     post:
       operationId: createBook
+      tags: [books]
+      description: Create a book. Title and author are required; year and ISBN are optional.
       requestBody:
         required: true
         content:
@@ -64,15 +78,20 @@ paths:
         schema: {type: integer, minimum: 1}
     get:
       operationId: getBook
+      tags: [books]
+      description: Read a single book by id.
       responses:
         '200':
           description: Book found
           content:
             application/json:
               schema: {$ref: '#/components/schemas/Book'}
+        '400': {$ref: '#/components/responses/BadRequest'}
         '404': {$ref: '#/components/responses/NotFound'}
     put:
       operationId: updateBook
+      tags: [books]
+      description: Replace a book. Optional fields omitted from the payload are cleared.
       requestBody:
         required: true
         content:
@@ -86,11 +105,15 @@ paths:
               schema: {$ref: '#/components/schemas/Book'}
         '400': {$ref: '#/components/responses/BadRequest'}
         '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
     delete:
       operationId: deleteBook
+      tags: [books]
+      description: Delete a book. Returns 204 with an empty body.
       responses:
         '204':
           description: Deleted (response has no body)
+        '400': {$ref: '#/components/responses/BadRequest'}
         '404': {$ref: '#/components/responses/NotFound'}
 components:
   schemas:
@@ -120,8 +143,17 @@ components:
       properties:
         title: {type: string, minLength: 1, maxLength: 200}
         author: {type: string, minLength: 1, maxLength: 200}
-        year: {type: integer, nullable: true, minimum: 1450, maximum: 2100}
-        isbn: {type: string, pattern: '^\d{13}$', nullable: true}
+        year:
+          type:
+            - integer
+            - 'null'
+          minimum: 1450
+          maximum: 2100
+        isbn:
+          type:
+            - string
+            - 'null'
+          pattern: '^\d{13}$'
     Error:
       type: object
       required: [code, message]

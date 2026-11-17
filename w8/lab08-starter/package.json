@@ -1,5 +1,6 @@
 {
   "devDependencies": {
-    "@stoplight/spectral-cli": "^6.17.1"
+    "@stoplight/spectral-cli": "^6.17.1",
+    "newman": "^6.2.3"
   }
 }

@@ -74,8 +74,10 @@ File `books-api.postman_collection.json` chứa 5 happy-path requests chạy the
 - Chạy bằng Newman, lưu JUnit report.
 
 ```bash
-npm install -g newman
-newman run books-api.postman_collection.json \
+npm install 
+bash scripts/run_lab3.sh 
+
+npx newman run books-api.postman_collection.json \
   -e postman/local.postman_environment.json \
   -r cli,junit --reporter-junit-export reports/junit.xml
 ```

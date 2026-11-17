@@ -1,0 +1,2 @@
+Method,Name,Error,Occurrences,First Seen,Last Seen
+GET,GET /books?year=,CatchResponseError('INJECTED client-side failure (not an HTTP 500)'),9,2026-11-17T08:16:08Z,2026-11-17T08:16:29Z

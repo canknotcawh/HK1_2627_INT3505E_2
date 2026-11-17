@@ -1,4 +1,3 @@
-
 import pytest
 from jsonschema import validate, ValidationError
 from tools import get_book_schema
@@ -59,21 +58,21 @@ def test_post_delete_get_book(client, app, sample_book):
     assert get_response.get_json()["code"] == "NOT_FOUND"
 
 
-def test_book_response_schema_validation(client, app, sample_book):
-    # sample_book is the ID of an existing book
+def test_response_extra_field_blocked(client, app, sample_book):
+    """Bonus: the response must satisfy the Book schema, and a leaked field
+    (e.g. password_hash) must be rejected because additionalProperties is false.
+    """
     response = client.get(f"/books/{sample_book}")
 
     assert response.status_code == 200
 
     book_response = response.get_json()
     schema = get_book_schema()
-
-    # Original response must satisfy JSON Schema
     validate(instance=book_response, schema=schema)
 
-    # Copy response and add an unknown field
-    invalid_response = book_response.copy()
-    invalid_response["unknown_field"] = "unexpected"
+    # Simulate a backend leaking an internal field into the fixture response.
+    leaked_response = book_response.copy()
+    leaked_response["password_hash"] = "sha256:deadbeef"
 
     with pytest.raises(ValidationError):
-        validate(instance=invalid_response, schema=schema)
+        validate(instance=leaked_response, schema=schema)

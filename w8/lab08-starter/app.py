@@ -34,6 +34,7 @@ def create_app(config=None, cfg=None):
         TESTING=False,
     )
     app.config.update(config or cfg or {})
+    Path("instance").mkdir(parents=True, exist_ok=True)
     db.init_app(app)
 
     with app.app_context():
