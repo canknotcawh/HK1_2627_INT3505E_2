@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: spectral
+        name: Spectral OpenAPI Lint
+        entry: spectral lint openapi.yaml --ruleset .spectral.yml
+        language: system
+        pass_filenames: false
+        files: ^(openapi\.yaml|\.spectral\.yml)$

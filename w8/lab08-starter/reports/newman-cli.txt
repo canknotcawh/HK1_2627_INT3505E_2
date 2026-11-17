@@ -14,7 +14,7 @@ Books API — Lab08 Starter
   ✓  positive id
 
 ↳ GET /books/{id} — read
-  GET http://127.0.0.1:5000/books/541 [200 OK, 236B, 4ms]
+  GET http://127.0.0.1:5000/books/541 [200 OK, 236B, 5ms]
   ✓  200 OK
   ✓  expected fields
   ✓  book_id from collection variable
@@ -31,13 +31,13 @@ Books API — Lab08 Starter
 
 ❏ error-cases
 ↳ POST /books — missing title
-  POST http://127.0.0.1:5000/books [400 BAD REQUEST, 307B, 2ms]
+  POST http://127.0.0.1:5000/books [400 BAD REQUEST, 307B, 4ms]
   ✓  400 Bad Request
   ✓  code is VALIDATION_ERROR
   ✓  title field reported
 
 ↳ GET /books/9999 — not found
-  GET http://127.0.0.1:5000/books/9999 [404 NOT FOUND, 220B, 3ms]
+  GET http://127.0.0.1:5000/books/9999 [404 NOT FOUND, 220B, 4ms]
   ✓  404 Not Found
   ✓  code is NOT_FOUND
   ✓  message is not empty
@@ -55,9 +55,9 @@ Books API — Lab08 Starter
 ├─────────────────────────┼─────────────────┼─────────────────┤
 │              assertions │              17 │               0 │
 ├─────────────────────────┴─────────────────┴─────────────────┤
-│ total run duration: 156ms                                   │
+│ total run duration: 187ms                                   │
 ├─────────────────────────────────────────────────────────────┤
 │ total data received: 1.89kB (approx)                        │
 ├─────────────────────────────────────────────────────────────┤
-│ average response time: 8ms [min: 2ms, max: 19ms, s.d.: 5ms] │
+│ average response time: 8ms [min: 4ms, max: 19ms, s.d.: 5ms] │
 └─────────────────────────────────────────────────────────────┘
